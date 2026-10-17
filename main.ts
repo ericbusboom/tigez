@@ -52,14 +52,27 @@ const LINE_POSITION = [
 const SPEED = 15  // cm/s
 const KP = 40     // how hard to turn: degrees per second of turning for each step the line is off centre
 const KD = 0      // how much to resist sudden changes; leave at 0 until KP is working
+const STOP_AFTER_CM = 230  // stop following after this much travel along the line (2.1 m)
 
 let running = false
 
 function followLine() {
     running = true
     let lastPosition = 0
+    // Add up how far the robot has driven along its path, from the change
+    // in pose between ticks. poseX/poseY alone would only give the
+    // straight-line distance from the start, which is wrong on a curve.
+    let travelled = 0
+    let lastX = diffDrive.poseX()
+    let lastY = diffDrive.poseY()
     diffDrive.driveTwist(SPEED, 0)
     while (diffDrive.driveTick() && running) {
+        const x = diffDrive.poseX()
+        const y = diffDrive.poseY()
+        travelled += Math.sqrt((x - lastX) * (x - lastX) + (y - lastY) * (y - lastY))
+        lastX = x
+        lastY = y
+        if (travelled >= STOP_AFTER_CM) break
         let position = LINE_POSITION[readSensors()]
         // Lost the line? Keep turning the way we were already turning.
         if (position == NO_LINE) position = lastPosition
