@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "setup": "npm install --no-audit --no-fund && pxt install",
+    "build": "pxt build",
+    "deploy": "pxt deploy",
+    "code": "bash scripts/code.sh"
+  },
+  "dependencies": {
+    "pxt-microbit": "^9.1.1"
+  }
+}

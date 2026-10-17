@@ -10,3 +10,7 @@ _site
 *.tgz
 .header.json
 .simstate.json
+
+# Local MakeCode editor state (written by scripts/code.sh / make code)
+projects/
+_history
